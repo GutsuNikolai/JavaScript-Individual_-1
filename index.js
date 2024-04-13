@@ -1,6 +1,5 @@
 //Prev. Для анализа даты используется "Date" поэтому можно вводить раными способами, например yyyy-mm-dd
 
-// Модуль для работы с файлами 
 const fs = require('fs');
 
 class TransactionAnalyzer {
@@ -33,12 +32,12 @@ class TransactionAnalyzer {
      * @returns {Array<string>} - Массив уникальных типов транзакций.
      */
     getUniqueTransactionType() {
-        // Создаем Set для хранения уникальных типов транзакций(и отбора уникальных)
+        
         const uniqueTypes = new Set();
         this.transactions.forEach(transaction => {
             uniqueTypes.add(transaction.transaction_type);
         });
-        // Вовзвращаю Set как массив
+    
         return Array.from(uniqueTypes);
     }
     /**
@@ -61,7 +60,7 @@ class TransactionAnalyzer {
      * @returns {number} - Общая сумма транзакций за указанную дату.
      */
     calculateTotalAmountByDate(year, month, day) {
-        // Валидация даты
+
         if (month < 1 || month > 12 || day < 1 || day > 31) {
             console.error('Неправильно введена дата.');
             return 0;
@@ -73,7 +72,7 @@ class TransactionAnalyzer {
         };
 
         let totalAmount = 0;
-        // Перебор всех транзакций и выбор соответствующих
+    
         this.transactions.forEach(transaction => {
             const transactionDate = new Date(transaction.transaction_date);
             if (isSameDate(transactionDate, new Date(year, month - 1, day))) {
@@ -165,7 +164,7 @@ class TransactionAnalyzer {
             }
             transactionCountByMonth[month]++;
         });
-        // Выборка наипродуктивнейшего (вроде так пишется) месяца
+
         let mostTransactionsMonth = null;
         let maxTransactionCount = 0;
         for (const month in transactionCountByMonth) {
@@ -183,7 +182,7 @@ class TransactionAnalyzer {
      */
     findMostDebitTransactionMonth() {
         const debitTransactionCountByMonth = {};
-            // Проход и перебор
+            
             this.transactions.forEach(transaction => {
             if (transaction.transaction_type === 'debit') {
                 const month = new Date(transaction.transaction_date).getMonth();
@@ -194,7 +193,7 @@ class TransactionAnalyzer {
             }
         });
         
-        // Находим месяц с наибольшим количеством дебетовых транзакций(+1,чтоб не начинать с 0-го(январь- первый месяц))
+
         let mostDebitTransactionMonth = null;
         let maxDebitTransactionCount = 0;
         for (const month in debitTransactionCountByMonth) {
@@ -210,7 +209,7 @@ class TransactionAnalyzer {
      * @returns {string} - Наиболее часто встречающийся тип транзакции ('debit', 'credit' или 'equal').
      */
     mostTransactionTypes() {
-        // Подсчет количества дебетовых/кредетовых транзакций
+        
         let debitCount = 0;
         let creditCount = 0;
         this.transactions.forEach(transaction => {
@@ -262,7 +261,6 @@ class TransactionAnalyzer {
 
 }
 
-// Считывание данных с файла
 function readTransactionsFromFile(filePath) {
     try {
         const data = fs.readFileSync(filePath, 'utf8');
@@ -272,12 +270,9 @@ function readTransactionsFromFile(filePath) {
         return [];
     }
 }
-
-// Создание объекта с транзациями 
+ 
 const transactionsData = readTransactionsFromFile('transactions.json');
 const analyzer = new TransactionAnalyzer(transactionsData);
-
-//  Добавляю каждой транзакции метод "string" 
 analyzer.transactions.forEach(transaction => {
     transaction.string = function() {
         return JSON.stringify(this);
